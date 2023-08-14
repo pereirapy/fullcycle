@@ -31,13 +31,13 @@ describe("Unit test list all products use case", () => {
 
     const output = await productListUseCase.execute({});
 
-    expect(output.length).toBe(2);
-    expect(output[0].id).toBe(newProductA.id);
-    expect(output[0].name).toBe(newProductA.name);
-    expect(output[0].price).toBe(newProductA.price);
-    expect(output[1].id).toBe(newProductB.id);
-    expect(output[1].name).toBe(newProductB.name);
-    expect(output[1].price).toBe(newProductB.price);
+    expect(output.products.length).toBe(2);
+    expect(output.products[0].id).toBe(newProductA.id);
+    expect(output.products[0].name).toBe(newProductA.name);
+    expect(output.products[0].price).toBe(newProductA.price);
+    expect(output.products[1].id).toBe(newProductB.id);
+    expect(output.products[1].name).toBe(newProductB.name);
+    expect(output.products[1].price).toBe(newProductB.price);
   });
 
 });
