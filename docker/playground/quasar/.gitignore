@@ -1,0 +1,6 @@
+dataDb
+be/built
+be/node_modules
+be/.env
+be/.env-prod
+fe/node_modules

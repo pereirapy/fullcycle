@@ -1,0 +1,10 @@
+FROM dokken/ubuntu-18.04
+
+
+RUN apt-get update \
+    && apt install -y unzip libxi6 libgtk-3-0 libxss1 libgconf-2-4 libasound2 libxtst6 libnss3 libcanberra-gtk-module libcanberra-gtk3-module \
+    && apt-get install -y xvfb \
+    && apt-get install nodejs \
+    && apt-get install npm \
+    && snap docker install
+

@@ -1,0 +1,61 @@
+version: '3'
+
+services: 
+
+  db:
+    image: postgres
+    container_name: db
+    restart: always
+    tty: true
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./dataDb:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=nodedb
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    networks:
+      - nodenet  
+
+  be:
+    build:
+      context: ./be
+    container_name: be  
+    entrypoint: dockerize -wait tcp://db:5432 -timeout 20s node built/server.js
+    image: pereirapy/be_postgres
+    restart: always
+    networks:
+      - nodenet
+    volumes:
+      - ./be:/usr/src/app
+    tty: true
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+  fe:
+    build:
+      context: ./fe
+      target: develop-stage
+    container_name: fe  
+    entrypoint: dockerize -wait http://be:3000 -timeout 20s  /bin/sh -c "yarn && quasar dev -p 8080"
+    image: pereirapy/fe_quasar
+    ports: 
+      - "8080:8080"
+    networks:
+      - nodenet
+    volumes:
+      - ./fe:/app
+    tty: true
+    depends_on:
+      - be
+
+
+networks: 
+  nodenet:
+    driver: bridge   
+
+volumes:
+  dataDb:    
