@@ -1,5 +1,10 @@
+import { Sequelize } from "sequelize-typescript";
+
 import UpdateProductUseCase from "./update.product.usecase";
 import ProductFactory from "../../../domain/product/factory/product.factory";
+import ProductRepository from "../../../infrastructure/product/repository/sequelize/product.repository";
+import CreateProductUseCase from "../create/create.product.usecase";
+import ProductModel from "../../../infrastructure/product/repository/sequelize/product.model";
 
 const product = ProductFactory.create('b','Product',1);
 
@@ -56,3 +61,58 @@ describe("Unit test update product use case", () => {
   });
 
 });
+
+describe("Integration test to list update an Products", () => {
+
+  let sequelize: Sequelize;
+
+
+beforeEach(async () => {
+  sequelize = new Sequelize({
+    dialect: "sqlite",
+    storage: ":memory:",
+    logging: false,
+    sync: { force: true },
+  });
+
+  sequelize.addModels([ProductModel]);
+  await sequelize.sync();
+});
+
+afterEach(async () => {
+  await sequelize.close();
+});
+
+
+  it("should update a product", async () => {
+    const productRepository = new ProductRepository();
+    const productCreateUseCase = new CreateProductUseCase(productRepository);
+    const productUpdateUseCase = new UpdateProductUseCase(productRepository);
+
+
+    const input = {
+      type: 'b',
+      name: "Product B",
+      price: 1,
+    };
+  
+    const outputNewProduct = await productCreateUseCase.execute(input);
+
+    const outputNewProductUpdated = {
+      id: outputNewProduct.id,
+      name: "Product Updated",
+      price: 2,
+    };
+    
+
+    const output = await productUpdateUseCase.execute(outputNewProductUpdated);
+
+    expect(output).toEqual({
+      id: outputNewProductUpdated.id,
+      name: outputNewProductUpdated.name,
+      price: outputNewProductUpdated.price,
+    });
+  });
+
+});
+
