@@ -24,4 +24,15 @@ describe("Product factory unit test", () => {
       "Product type not supported"
     );
   });
+
+  it("should not create a new product", () => {
+    expect.assertions(1)
+    try {
+      ProductFactory.create("a","",-1);
+    } catch (error) {
+      expect(error.toString()).toEqual("Error: product: Name is required,product: Price must be greater than zero");
+    }
+
+  });
+
 });

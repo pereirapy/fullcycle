@@ -10,6 +10,17 @@ describe("Customer factory unit test", () => {
     expect(customer.Address).toBeUndefined();
   });
 
+  it("should not create a customer", () => {
+    expect.assertions(1)
+    try {
+      
+      CustomerFactory.create("");
+    } catch (error) {
+      expect(error.toString()).toEqual("Error: customer: Name is required");
+    }
+
+  });
+
   it("should create a customer with an address", () => {
     const address = new Address("Street", 1, "13330-250", "São Paulo");
 

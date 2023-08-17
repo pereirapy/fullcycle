@@ -6,6 +6,7 @@ import {
 import { v4 as uuid } from "uuid";
 import CustomerFactory from "../../../domain/customer/factory/customer.factory";
 import Address from "../../../domain/customer/value-object/address";
+import NotificationError from "../../../domain/@shared/notification/notification.error";
 
 export default class CreateCustomerUseCase {
   private customerRepository: CustomerRepositoryInterface;
@@ -27,6 +28,10 @@ export default class CreateCustomerUseCase {
       )
     );
 
+		if (customer.notification.hasErrors()) {
+			throw new NotificationError(customer.notification.getErrors());
+		}
+    
     await this.customerRepository.create(customer);
 
     return {

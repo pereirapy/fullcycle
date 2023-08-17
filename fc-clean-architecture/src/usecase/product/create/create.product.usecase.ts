@@ -4,6 +4,7 @@ import {
   OutputCreateProductDto,
 } from "./create.product.dto";
 import ProductFactory from "../../../domain/product/factory/product.factory";
+import NotificationError from "../../../domain/@shared/notification/notification.error";
 
 export default class CreateProductUseCase {
   private productRepository: ProductRepositoryInterface;
@@ -20,7 +21,9 @@ export default class CreateProductUseCase {
       input.name,
       input.price
     );
-
+		if (product.notification.hasErrors()) {
+			throw new NotificationError(product.notification.getErrors());
+		}
     await this.productRepository.create(product);
 
     return {

@@ -1,3 +1,4 @@
+import NotificationError from "../../../domain/@shared/notification/notification.error";
 import CustomerRepositoryInterface from "../../../domain/customer/repository/customer-repository.interface";
 import Address from "../../../domain/customer/value-object/address";
 import {
@@ -23,6 +24,11 @@ export default class UpdateCustomerUseCase {
         input.address.city
       )
     );
+
+    if (customer.notification.hasErrors()) {
+			throw new NotificationError(customer.notification.getErrors());
+		}
+
     await this.CustomerRepository.update(customer);
 
     return {
